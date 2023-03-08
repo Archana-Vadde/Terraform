@@ -7,7 +7,7 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
-variable "kms_op_arn" {}
+#variable "kms_op_arn" {}
 variable "sqs_op_arn" {}
 
 

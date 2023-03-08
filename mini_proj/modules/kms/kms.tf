@@ -1,8 +1,9 @@
 resource "aws_kms_key" "kms" {
   count = length(var.name)
+  name = var.name[count.index]
   deletion_window_in_days = var.deletion_window_in_days
   tags = {
-    name = "${var.name}-kms"
+    name = "kms"
   }
   /*
   key_statements = [
@@ -23,8 +24,8 @@ resource "aws_kms_key" "kms" {
 }
 
 resource "aws_kms_alias" "alias" {
-  target_key_id = aws_kms_key.kms.key_id
-  name          = "alias/${var.name}"
+  target_key_id = aws_kms_key.kms[0].key_id
+  name          = "alias/${var.name[0]}"
 }
  
 

@@ -40,7 +40,7 @@ data "aws_iam_policy_document" "queue" {
   }
 }
 
-resource "aws_lambda_event_source_mapping" "example" {
+resource "aws_lambda_event_source_mapping" "Example" {
   event_source_arn = aws_sqs_queue.queue.arn
   function_name    = var.lambda_op_arn
 }

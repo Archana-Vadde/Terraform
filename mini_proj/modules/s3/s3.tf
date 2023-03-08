@@ -9,6 +9,7 @@ resource "aws_s3_bucket" "this" {
   ignore_public_acls      = true
   restrict_public_buckets = true
   }
+  /*
   resource "aws_s3_bucket_server_side_encryption_configuration" "this" {
   bucket = aws_s3_bucket.this.bucket
 
@@ -19,7 +20,7 @@ resource "aws_s3_bucket" "this" {
     }
   }
 }
-
+*/
 resource "aws_s3_bucket_notification" "notification" {
   bucket = aws_s3_bucket.this.id
 
