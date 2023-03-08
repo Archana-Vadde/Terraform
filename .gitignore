@@ -1,0 +1,9 @@
+.terraform
+terraform.tfstate
+terraform.tfstate.backup
+.terraform.lock.hcl
+uat-out.json
+*.txt
+log
+*.zip
+*.json
