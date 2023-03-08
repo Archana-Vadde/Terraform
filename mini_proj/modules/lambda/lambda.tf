@@ -21,16 +21,16 @@ resource "aws_lambda_function" "test_lambda" {
   }
 }
 
-#resource "aws_lambda_function_event_invoke_config" "example" {
- # function_name = var.function_name
+resource "aws_lambda_function_event_invoke_config" "example" {
+ function_name = var.function_name
 
-  #destination_config {
-   # on_failure {
-    #  destination = "arn:aws:sns:us-east-1:859662211748:failuresns"
-    #}
+  destination_config {
+    on_failure {
+      destination = var.f_sns_op_arn
+    }
 
-    #on_success {
-     # destination = aws_sns_topic.sns.arn
-    #}
-  #}
-#}
+    on_success {
+      destination = var.s_sns1_op_arn
+    }
+  }
+}

@@ -12,6 +12,8 @@ variable "name" {
     default = "suceess_sns"
       
 }
+variable "s_sns1_op_arn" {}
+variable "f_sns_op_arn" {}
 
 #variable "kmskeyarn" { 
 #}
