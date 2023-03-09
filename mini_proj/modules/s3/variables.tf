@@ -1,5 +1,6 @@
 variable "name"{
-  default = "demo9876543"
+  type = list(string)
+  default = ["demo9876543"]
 }
 
 variable "tags" {
@@ -7,7 +8,12 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
-#variable "kms_op_arn" {}
+variable "environment" {
+  type = string
+  default = "dev"
+  
+}
+variable "kms_op_arn" {}
 variable "sqs_op_arn" {}
 
 

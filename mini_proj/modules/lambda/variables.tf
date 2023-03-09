@@ -2,15 +2,15 @@ variable "runtime" {
     type = string
     default = "python3.9"  
 }
-variable "function_name" {
-    type = string
-    default = "demo-function"
+variable "name" {
+    type = list
+    default = ["demo-function"]
    
 }
-variable "name" {
+variable "environment" {
     type = string
-    default = "suceess_sns"
-      
+    default = "dev"
+  
 }
 variable "s_sns1_op_arn" {}
 variable "f_sns_op_arn" {}

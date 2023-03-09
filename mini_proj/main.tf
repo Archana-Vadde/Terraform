@@ -1,20 +1,20 @@
-/*
+
 module "kms_module" {
   source = "./modules/kms"
 }
-*/
+
 
 module "s3_module" {
   source     = "./modules/s3"
-  #kms_op_arn = module.kms_module.kms_op[0]
-  sqs_op_arn = module.sqs_module.sqs_op
+  kms_op_arn = module.kms_module.kms_op[0]
+  sqs_op_arn = module.sqs_module.sqs_op[0]
 
 }
 module "sqs_module" {
   source = "./modules/sqs"
-  #kms_op_arn    = module.kms_module.kms_op[0]
-  s3_op_arn     = module.s3_module.s3_op
-  lambda_op_arn = module.lambda_module.lambda_op
+  kms_op_arn    = module.kms_module.kms_op[0]
+  s3_op_arn     = module.s3_module.s3_op[0]
+  lambda_op_arn = module.lambda_module.lambda_op[0]
 
 
 }
@@ -26,6 +26,6 @@ module "lambda_module" {
 
 module "sns_module" {
   source = "./modules/sns"
-  #kms_op_arn    = module.kms_module.kms_op
-  lambda_op_arn = module.lambda_module.lambda_op
+  kms_op_arn    = module.kms_module.kms_op[0]
+  lambda_op_arn = module.lambda_module.lambda_op[0]
 }

@@ -1,12 +1,17 @@
 variable "name" {
-    type = string
-    default = "demo"
+    type = list
+    default = ["demo"]
+}
+variable "environment" {
+  type = string
+  default = "dev"
+  
 }
 variable "delay_seconds" {
     type = number
     default = 0
 }
-#variable "kms_op_arn"{}
+variable "kms_op_arn"{}
 variable "s3_op_arn" {}
 variable "lambda_op_arn" {}
 
