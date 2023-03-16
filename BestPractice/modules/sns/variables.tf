@@ -99,30 +99,30 @@ variable "topic_policy_statements" {
 ################################################################################
 variable "enable_email_subscribe" {
     type = bool
-    default = true
+    default = false
   
 }
 variable "enable_lambda_subscribe" {
     type = bool
-    default = true
+    default = false
   
 }
 variable "enable_sqs_subscribe" {
     type = bool
-    default = true
+    default = false
   
 }
 variable "email_endpoint" {
     type = string
-    default = "archana41490@gmail.com"
+    default = ""
 }
 variable "lambda_endpoint" {
     type = string
-    default = "arn:aws:lambda:eu-west-2:859662211748:function:aa"
+    default = ""
   
 }
 variable "sqs_endpoint" {
     type = string
-    default = "arn:aws:sqs:eu-west-2:859662211748:aaaa"
+    default = ""
   
 }
