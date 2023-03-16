@@ -3,12 +3,14 @@ data "aws_caller_identity" "current" {}
 ################################################################################
 # Topic
 ################################################################################
-
+locals {
+   kms_key_id =  var.encryption_enabled && var.kms_master_key_id != "" ? var.kms_master_key_id : ""
+}
 resource "aws_sns_topic" "this" {
   count = var.create ? 1 : 0
   name        = var.use_name_prefix ? null : "${var.environment}-${var.name}"
-  name_prefix = var.use_name_prefix ? var.name : null
-  kms_master_key_id = var.kms_master_key_id
+  name_prefix = var.use_name_prefix ? var.environment : null
+  kms_master_key_id = local.kms_key_id
   policy = var.create_topic_policy ? null : var.topic_policy
   tags = var.tags
 }

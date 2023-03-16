@@ -20,6 +20,7 @@ module "sns_module" {
   source = "./modules/sns"
   tags = local.tags
   kms_master_key_id = module.kms_module.key_arn
+
   
 }
 module "sqs_module" {

@@ -4,6 +4,7 @@
 
 locals {
   name = try(trimsuffix("${var.environment}-${var.name}", ".fifo"), "")
+  kms_key_id =  var.encryption_enabled && var.kms_master_key_id != "" ? var.kms_master_key_id : ""
 }
 
 resource "aws_sqs_queue" "this" {
@@ -15,7 +16,7 @@ resource "aws_sqs_queue" "this" {
   fifo_queue                        = var.fifo_queue
   fifo_throughput_limit             = var.fifo_throughput_limit
   kms_data_key_reuse_period_seconds = var.kms_data_key_reuse_period_seconds
-  kms_master_key_id                 = var.kms_master_key_id
+  kms_master_key_id                 = local.kms_key_id
   max_message_size                  = var.max_message_size
   message_retention_seconds         = var.message_retention_seconds
   name                              = var.use_name_prefix ? null : (var.fifo_queue ? "${local.name}.fifo" : local.name)

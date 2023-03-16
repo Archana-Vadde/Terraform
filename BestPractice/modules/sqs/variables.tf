@@ -23,7 +23,11 @@ variable "name" {
   type        = string
   default     = "demo"
 }
-
+variable "encryption_enabled" {
+  type        = bool
+  description = "Whether or not to use encryption for SNS Topic. If set to `true` and no custom value for KMS key (kms_master_key_id) is provided, it uses the default `alias/aws/sns` KMS key."
+  default     = false
+}
 variable "kms_master_key_id" {
   description = "The ID of an AWS-managed customer master key (CMK) for Amazon SQS or a custom CMK"
   type        = string
@@ -51,7 +55,7 @@ variable "dlq_name" {
 variable "dlq_kms_master_key_id" {
   description = "The ID of an AWS-managed customer master key (CMK) for Amazon SQS or a custom CMK"
   type        = string
-  default     = null
+  default     = ""
 }
 
 variable "lambda_arn" {
