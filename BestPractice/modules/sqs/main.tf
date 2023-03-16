@@ -4,7 +4,7 @@
 
 locals {
   name = try(trimsuffix("${var.environment}-${var.name}", ".fifo"), "")
-  kms_key_id =  var.encryption_enabled && var.kms_master_key_id != "" ? var.kms_master_key_id : ""
+  
 }
 
 resource "aws_sqs_queue" "this" {
@@ -16,7 +16,7 @@ resource "aws_sqs_queue" "this" {
   fifo_queue                        = var.fifo_queue
   fifo_throughput_limit             = var.fifo_throughput_limit
   kms_data_key_reuse_period_seconds = var.kms_data_key_reuse_period_seconds
-  kms_master_key_id                 = local.kms_key_id
+  kms_master_key_id                 = var.enable_encryption ? var.kms_master_key_id : null
   max_message_size                  = var.max_message_size
   message_retention_seconds         = var.message_retention_seconds
   name                              = var.use_name_prefix ? null : (var.fifo_queue ? "${local.name}.fifo" : local.name)
@@ -31,7 +31,12 @@ resource "aws_sqs_queue" "this" {
 ################################################################################
 # Queue Policy
 ################################################################################
+resource "aws_sqs_queue_policy" "this" {
+  count = var.create && var.create_queue_policy ? 1 : 0
 
+  queue_url = aws_sqs_queue.this[0].url
+  policy    = data.aws_iam_policy_document.this[0].json
+}
 data "aws_iam_policy_document" "this" {
   count = var.create && var.create_queue_policy ? 1 : 0
 
@@ -80,23 +85,11 @@ data "aws_iam_policy_document" "this" {
   }
 }
 
-resource "aws_sqs_queue_policy" "this" {
-  count = var.create && var.create_queue_policy ? 1 : 0
 
-  queue_url = aws_sqs_queue.this[0].url
-  policy    = data.aws_iam_policy_document.this[0].json
-}
 
 ################################################################################
 # Re-drive Policy
 ################################################################################
-
-resource "aws_sqs_queue_redrive_policy" "this" {
-  count = var.create && !var.create_dlq && length(var.redrive_policy) > 0 ? 1 : 0
-
-  queue_url      = aws_sqs_queue.this[0].url
-  redrive_policy = jsonencode(var.redrive_policy)
-}
 
 resource "aws_sqs_queue_redrive_policy" "dlq" {
   count = var.create && var.create_dlq ? 1 : 0
@@ -136,7 +129,7 @@ resource "aws_sqs_queue" "dlq" {
   fifo_queue                        = var.fifo_queue
   fifo_throughput_limit             = var.fifo_throughput_limit
   kms_data_key_reuse_period_seconds = try(coalesce(var.dlq_kms_data_key_reuse_period_seconds, var.kms_data_key_reuse_period_seconds), null)
-  kms_master_key_id                 = local.dlq_kms_master_key_id
+  kms_master_key_id                 = var.enable_dlq_encryption ? var.kms_master_key_id : null
   max_message_size                  = var.max_message_size
   message_retention_seconds         = try(coalesce(var.dlq_message_retention_seconds, var.message_retention_seconds), null)
   name                              = var.use_name_prefix ? null : "${var.environment}-${local.dlq_name}"

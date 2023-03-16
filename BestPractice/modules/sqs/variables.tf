@@ -23,7 +23,7 @@ variable "name" {
   type        = string
   default     = "demo"
 }
-variable "encryption_enabled" {
+variable "enable_encryption" {
   type        = bool
   description = "Whether or not to use encryption for SNS Topic. If set to `true` and no custom value for KMS key (kms_master_key_id) is provided, it uses the default `alias/aws/sns` KMS key."
   default     = false
@@ -50,6 +50,11 @@ variable "dlq_name" {
   description = "This is the human-readable name of the queue. If omitted, Terraform will assign a random name"
   type        = string
   default     = "demodlq"
+}
+variable "enable_dlq_encryption" {
+  type        = bool
+  description = "Whether or not to use encryption for SNS Topic. If set to `true` and no custom value for KMS key (kms_master_key_id) is provided, it uses the default `alias/aws/sns` KMS key."
+  default     = false
 }
 
 variable "dlq_kms_master_key_id" {
