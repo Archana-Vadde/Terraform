@@ -3,7 +3,7 @@
 ################################################################################
 
 locals {
-  name = try(trimsuffix(var.name, ".fifo"), "")
+  name = try(trimsuffix("${var.environment}-${var.name}", ".fifo"), "")
 }
 
 resource "aws_sqs_queue" "this" {
@@ -138,8 +138,8 @@ resource "aws_sqs_queue" "dlq" {
   kms_master_key_id                 = local.dlq_kms_master_key_id
   max_message_size                  = var.max_message_size
   message_retention_seconds         = try(coalesce(var.dlq_message_retention_seconds, var.message_retention_seconds), null)
-  name                              = var.use_name_prefix ? null : local.dlq_name
-  name_prefix                       = var.use_name_prefix ? "${local.dlq_name}-" : null
+  name                              = var.use_name_prefix ? null : "${var.environment}-${local.dlq_name}"
+  name_prefix                       = var.use_name_prefix ? "${var.environment}-${local.dlq_name}" : null
   receive_wait_time_seconds         = try(coalesce(var.dlq_receive_wait_time_seconds, var.receive_wait_time_seconds), null)
   sqs_managed_sse_enabled           = local.dlq_kms_master_key_id != null ? null : local.dlq_sqs_managed_sse_enabled
   visibility_timeout_seconds        = try(coalesce(var.dlq_visibility_timeout_seconds, var.visibility_timeout_seconds), null)

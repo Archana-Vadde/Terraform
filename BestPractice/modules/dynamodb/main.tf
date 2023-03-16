@@ -1,6 +1,6 @@
 resource "aws_dynamodb_table" "this" {
   count = var.create_table ? 1 : 0
-  name         = var.db_table_name
+  name         = "${var.environment}-${var.db_table_name}"
   hash_key     = var.hash_key  
   billing_mode = var.billing_mode 
   

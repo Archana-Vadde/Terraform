@@ -6,23 +6,10 @@ data "aws_caller_identity" "current" {}
 
 resource "aws_sns_topic" "this" {
   count = var.create ? 1 : 0
-
-  name        = var.use_name_prefix ? null : "${var.name}-sns"
+  name        = var.use_name_prefix ? null : "${var.environment}-${var.name}"
   name_prefix = var.use_name_prefix ? var.name : null
-
-
   kms_master_key_id = var.kms_master_key_id
-
-  lambda_failure_feedback_role_arn    = try(var.lambda_feedback.failure_role_arn, null)
-  lambda_success_feedback_role_arn    = try(var.lambda_feedback.success_role_arn, null)
-  lambda_success_feedback_sample_rate = try(var.lambda_feedback.success_sample_rate, null)
-
   policy = var.create_topic_policy ? null : var.topic_policy
-
-  sqs_failure_feedback_role_arn    = try(var.sqs_feedback.failure_role_arn, null)
-  sqs_success_feedback_role_arn    = try(var.sqs_feedback.success_role_arn, null)
-  sqs_success_feedback_sample_rate = try(var.sqs_feedback.success_sample_rate, null)
-
   tags = var.tags
 }
 

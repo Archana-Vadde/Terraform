@@ -1,12 +1,93 @@
+################################################################################
+                #required parameters
+###################################################################################
+
 variable "create" {
   description = "Whether to create SQS queue"
   type        = bool
   default     = true
 }
 
-################################################################################
-# Queue
-################################################################################
+variable "environment" {
+  description = "The environment to deploy to."
+  type        = string
+  default     = "dev"
+  validation {
+    condition     = contains(["dev", "prod", "sit", "snd", "uat"], var.environment)
+    error_message = "Valid values for var: environment are (dev, prod, sit, snd, uat)."
+  }
+}
+
+variable "name" {
+  description = "This is the human-readable name of the queue. If omitted, Terraform will assign a random name"
+  type        = string
+  default     = "demo"
+}
+
+variable "kms_master_key_id" {
+  description = "The ID of an AWS-managed customer master key (CMK) for Amazon SQS or a custom CMK"
+  type        = string
+  default     = ""
+}
+
+variable "tags" {
+  description = "The tags provided by the client module. To be merged with internal tags"
+  type        = map(string)
+  default     = {}
+}
+
+variable "create_dlq" {
+  description = "Determines whether to create SQS dead letter queue"
+  type        = bool
+  default     = true
+}
+
+variable "dlq_name" {
+  description = "This is the human-readable name of the queue. If omitted, Terraform will assign a random name"
+  type        = string
+  default     = "demodlq"
+}
+
+variable "dlq_kms_master_key_id" {
+  description = "The ID of an AWS-managed customer master key (CMK) for Amazon SQS or a custom CMK"
+  type        = string
+  default     = null
+}
+
+variable "lambda_arn" {
+    description = "provide lambda arn"
+    type = string
+    default = ""
+}
+
+variable "dlq_tags" {
+  description = "A mapping of additional tags to assign to the dead letter queue"
+  type        = map(string)
+  default     = {Name = "demodlq"}
+  
+}
+
+variable "create_dlq_queue_policy" {
+  description = "Whether to create SQS queue policy"
+  type        = bool
+  default     = false
+}
+
+variable "create_queue_policy" {
+  description = "Whether to create SQS queue policy"
+  type        = bool
+  default     = false
+}
+
+variable "enable_sqs_lambda_trigger_enable" {
+  description = "lambda treigger from sqs"
+  type = bool
+  default = false
+}
+
+###################################################################################
+                 # other paramerters
+###############################################################################
 
 variable "content_based_deduplication" {
   description = "Enables content-based deduplication for FIFO queues"
@@ -44,11 +125,7 @@ variable "kms_data_key_reuse_period_seconds" {
   default     = null
 }
 
-variable "kms_master_key_id" {
-  description = "The ID of an AWS-managed customer master key (CMK) for Amazon SQS or a custom CMK"
-  type        = string
-  default     = ""
-}
+
 
 variable "max_message_size" {
   description = "The limit of how many bytes a message can contain before Amazon SQS rejects it. An integer from 1024 bytes (1 KiB) up to 262144 bytes (256 KiB)"
@@ -62,11 +139,7 @@ variable "message_retention_seconds" {
   default     = null
 }
 
-variable "name" {
-  description = "This is the human-readable name of the queue. If omitted, Terraform will assign a random name"
-  type        = string
-  default     = "demo"
-}
+
 
 variable "use_name_prefix" {
   description = "Determines whether `name` is used as a prefix"
@@ -104,21 +177,13 @@ variable "visibility_timeout_seconds" {
   default     = null
 }
 
-variable "tags" {
-  description = "A mapping of tags to assign to all resources"
-  type        = map(string)
-  default     = {Resoucename = "demosqs"}
-}
+
 
 ################################################################################
 # Queue Policy
 ################################################################################
 
-variable "create_queue_policy" {
-  description = "Whether to create SQS queue policy"
-  type        = bool
-  default     = false
-}
+
 
 variable "source_queue_policy_documents" {
   description = "List of IAM policy documents that are merged together into the exported document. Statements must have unique `sid`s"
@@ -138,15 +203,14 @@ variable "queue_policy_statements" {
   default     = {}
 }
 
+
+
+
 ################################################################################
 # Dead Letter Queue
 ################################################################################
 
-variable "create_dlq" {
-  description = "Determines whether to create SQS dead letter queue"
-  type        = bool
-  default     = true
-}
+
 
 variable "dlq_content_based_deduplication" {
   description = "Enables content-based deduplication for FIFO queues"
@@ -172,11 +236,7 @@ variable "dlq_kms_data_key_reuse_period_seconds" {
   default     = null
 }
 
-variable "dlq_kms_master_key_id" {
-  description = "The ID of an AWS-managed customer master key (CMK) for Amazon SQS or a custom CMK"
-  type        = string
-  default     = null
-}
+
 
 variable "dlq_message_retention_seconds" {
   description = "The number of seconds Amazon SQS retains a message. Integer representing seconds, from 60 (1 minute) to 1209600 (14 days)"
@@ -184,11 +244,7 @@ variable "dlq_message_retention_seconds" {
   default     = null
 }
 
-variable "dlq_name" {
-  description = "This is the human-readable name of the queue. If omitted, Terraform will assign a random name"
-  type        = string
-  default     = "demodlq"
-}
+
 
 variable "dlq_receive_wait_time_seconds" {
   description = "The time for which a ReceiveMessage call will wait for a message to arrive (long polling) before returning. An integer from 0 to 20 (seconds)"
@@ -214,21 +270,12 @@ variable "dlq_visibility_timeout_seconds" {
   default     = null
 }
 
-variable "dlq_tags" {
-  description = "A mapping of additional tags to assign to the dead letter queue"
-  type        = map(string)
-  default     = {Name = "demodlq"}
-}
 
 ################################################################################
 # Dead Letter Queue Policy
 ################################################################################
 
-variable "create_dlq_queue_policy" {
-  description = "Whether to create SQS queue policy"
-  type        = bool
-  default     = false
-}
+
 
 variable "source_dlq_queue_policy_documents" {
   description = "List of IAM policy documents that are merged together into the exported document. Statements must have unique `sid`s"
@@ -248,14 +295,3 @@ variable "dlq_queue_policy_statements" {
   default     = {}
 }
 #######################################################
-variable "enable_sqs_lambda_trigger_enable" {
-  description = "lambda treigger from sqs"
-  type = bool
-  default = false
-}
-
-variable "lambda_arn" {
-    description = "provide lambda arn"
-    type = string
-    default = ""
-}

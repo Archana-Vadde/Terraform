@@ -1,10 +1,13 @@
 # for multiple environments use .tfvars files 
+#to overwrite module variable defalut values .tfvars files can be used
 #command terraform apply -var-file="dev.tfvars" --auto-approve
+#locals..> can use the name multiple times within a module instead of repeating the expression.
 
 locals {
   tags = {
     Project     = var.project
     createdby   = var.createdby
+    environment = var.environment
     
   }
 }

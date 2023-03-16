@@ -1,3 +1,4 @@
+
 resource "aws_kms_key" "this" {
    count = var.create ? 1 : 0
 
@@ -5,17 +6,13 @@ resource "aws_kms_key" "this" {
   policy = data.aws_iam_policy_document.this[0].json
   tags = var.tags
 }
-locals {
-  aliases = { for k, v in toset(var.aliases) : k => { name = v } }
-}
 
-resource "aws_kms_alias" "this" {
-  for_each = { for k, v in merge(local.aliases, var.computed_aliases) : k => v if var.create }
 
-  name          = var.aliases_use_name_prefix ? null : "alias/${each.value.name}"
-  name_prefix   = var.aliases_use_name_prefix ? "alias/${each.value.name}-" : null
+resource "aws_kms_alias" "alias" {
   target_key_id = aws_kms_key.this[0].key_id
+  name          = "alias/${var.environment}-${var.name}"
 }
+
 data "aws_iam_policy_document" "this" {
   count = var.create ? 1 : 0
 

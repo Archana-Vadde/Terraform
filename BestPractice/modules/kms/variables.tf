@@ -3,6 +3,20 @@ variable "create" {
   type        = bool
   default     = true
 }
+variable "name" {
+ type = string
+ default = "demo"
+  
+}
+variable "environment" {
+  description = "The environment to deploy to."
+  type        = string
+  default     = "dev"
+  validation {
+    condition     = contains(["dev", "prod", "sit", "snd", "uat"], var.environment)
+    error_message = "Valid values for var: environment are (dev, prod, sit, snd, uat)."
+  }
+}
 
 variable "tags" {
   description = "A map of tags to add to all resources"
@@ -12,17 +26,6 @@ variable "tags" {
 variable "deletion_window_in_days" {
   type = number
   default = 7  
-}
-variable "aliases" {
-  description = "A list of aliases to create. Note - due to the use of `toset()`, values must be static strings and not computed values"
-  type        = list(string)
-  default     = ["demo1", "demo2"]
-}
-
-variable "computed_aliases" {
-  description = "A map of aliases to create. Values provided via the `name` key of the map can be computed from upstream resources"
-  type        = any
-  default     = {}
 }
 
 variable "aliases_use_name_prefix" {

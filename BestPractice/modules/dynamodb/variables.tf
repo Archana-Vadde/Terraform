@@ -8,6 +8,15 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+variable "environment" {
+  description = "The environment to deploy to."
+  type        = string
+  default     = "dev"
+  validation {
+    condition     = contains(["dev", "prod", "sit", "snd", "uat"], var.environment)
+    error_message = "Valid values for var: environment are (dev, prod, sit, snd, uat)."
+  }
+}
 
 
 # -------------------------------------------

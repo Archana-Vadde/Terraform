@@ -17,6 +17,15 @@ variable "name" {
   type        = string
   default     = "demo"
 }
+variable "environment" {
+  description = "The environment to deploy to."
+  type        = string
+  default     = "dev"
+  validation {
+    condition     = contains(["dev", "prod", "sit", "snd", "uat"], var.environment)
+    error_message = "Valid values for var: environment are (dev, prod, sit, snd, uat)."
+  }
+}
 variable "use_name_prefix" {
   description = "Determines whether `name` is used as a prefix"
   type        = bool
@@ -28,37 +37,11 @@ variable "kms_master_key_id" {
   default = ""
 }
 
-variable "lambda_feedback" {
-  description = "Map of IAM role ARNs and sample rate for success and failure feedback"
-  type        = map(string)
-  default     = {}
-  # Example:
-  # application_feedback = {
-  #   failure_role_arn = "arn:aws:iam::11111111111:role/failure"
-  #   success_role_arn = "arn:aws:iam::11111111111:role/success"
-  #   success_sample_rate = 75
-  # }
-}
-
 variable "topic_policy" {
   description = "An externally created fully-formed AWS policy as JSON"
   type        = string
   default     = null
 }
-
-variable "sqs_feedback" {
-  description = "Map of IAM role ARNs and sample rate for success and failure feedback"
-  type        = map(string)
-  default     = {}
-  # Example:
-  # application_feedback = {
-  #   failure_role_arn = "arn:aws:iam::11111111111:role/failure"
-  #   success_role_arn = "arn:aws:iam::11111111111:role/success"
-  #   success_sample_rate = 75
-  # }
-}
-
-
 
 ################################################################################
 # Topic Policy
