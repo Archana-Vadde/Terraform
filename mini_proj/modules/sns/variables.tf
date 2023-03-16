@@ -12,3 +12,12 @@ variable "lambda_op_arn" {}
 variable "kms_op_arn" {
   
 }
+variable "sns_protocol" {
+    type = string
+    default = "email"  
+}
+variable "endpoint" {
+    type = string
+    default = ""
+  
+}

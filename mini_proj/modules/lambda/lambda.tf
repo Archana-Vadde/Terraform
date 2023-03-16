@@ -11,7 +11,7 @@ resource "aws_lambda_function" "test_lambda" {
   function_name = var.name[count.index]
   filename      = data.archive_file.lambda.output_path
   role          = aws_iam_role.iam_for_lambda.arn
-  handler       = "process_sqs.lambda_handler"
+  handler       = var.lambda_handler
 
   source_code_hash = filebase64sha256(data.archive_file.lambda.output_path)
 

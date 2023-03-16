@@ -47,7 +47,7 @@ variable "kms_data_key_reuse_period_seconds" {
 variable "kms_master_key_id" {
   description = "The ID of an AWS-managed customer master key (CMK) for Amazon SQS or a custom CMK"
   type        = string
-  default     = null
+  default     = ""
 }
 
 variable "max_message_size" {

@@ -8,6 +8,6 @@ resource "aws_sns_topic" "sns" {
 }
 resource "aws_sns_topic_subscription" "snstopc" {
     topic_arn = aws_sns_topic.sns[1].arn
-    protocol = "email"
-    endpoint = "archanavadde88@gmail.com"
+    protocol = var.sns_protocol
+    endpoint = var.endpoint
 }

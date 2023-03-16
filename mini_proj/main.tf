@@ -29,3 +29,11 @@ module "sns_module" {
   kms_op_arn    = module.kms_module.kms_op[0]
   lambda_op_arn = module.lambda_module.lambda_op[0]
 }
+module "dynamodb_module" {
+  source = "./modules/dynamodb"
+  
+}
+module "glue_module" {
+  source = "./modules/glue"
+  
+}

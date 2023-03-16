@@ -25,7 +25,7 @@ variable "use_name_prefix" {
 variable "kms_master_key_id" {
   description = "The ID of an AWS-managed customer master key (CMK) for Amazon SNS or a custom CMK"
   type        = string
-  default = null
+  default = ""
 }
 
 variable "lambda_feedback" {
@@ -99,17 +99,17 @@ variable "topic_policy_statements" {
 ################################################################################
 variable "enable_email_subscribe" {
     type = bool
-    default = true
+    default = false
   
 }
 variable "enable_lambda_subscribe" {
     type = bool
-    default = true
+    default = false
   
 }
 variable "enable_sqs_subscribe" {
     type = bool
-    default = true
+    default = false
   
 }
 variable "email_endpoint" {
