@@ -1,3 +1,6 @@
+provider "aws" {
+  region = "eu-west-2"
+}
 resource "aws_dynamodb_table" "this" {
   count = var.create_table  ? 1 : 0
 
