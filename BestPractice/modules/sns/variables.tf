@@ -34,7 +34,7 @@ variable "use_name_prefix" {
 variable "enable_encryption" {
   type        = bool
   description = "Whether or not to use encryption for SNS Topic. If set to `true` and no custom value for KMS key (kms_master_key_id) is provided, it uses the default `alias/aws/sns` KMS key."
-  default     = false
+  default     = true
 }
 variable "kms_master_key_id" {
   description = "The ID of an AWS-managed customer master key (CMK) for Amazon SNS or a custom CMK"
@@ -92,12 +92,12 @@ variable "enable_email_subscribe" {
 }
 variable "enable_lambda_subscribe" {
     type = bool
-    default = false
+    default = true
   
 }
 variable "enable_sqs_subscribe" {
     type = bool
-    default = false
+    default = true
   
 }
 variable "email_endpoint" {

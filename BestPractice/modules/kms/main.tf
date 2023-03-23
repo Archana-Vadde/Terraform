@@ -3,7 +3,7 @@ resource "aws_kms_key" "this" {
    count = var.create ? 1 : 0
 
   deletion_window_in_days = var.deletion_window_in_days
-  policy = data.aws_iam_policy_document.this[0].json
+  policy = data.aws_iam_policy_document.this.json
   tags = var.tags
 }
 
@@ -14,7 +14,6 @@ resource "aws_kms_alias" "alias" {
 }
 
 data "aws_iam_policy_document" "this" {
-  count = var.create ? 1 : 0
 
   source_policy_documents   = var.source_policy_documents
   override_policy_documents = var.override_policy_documents

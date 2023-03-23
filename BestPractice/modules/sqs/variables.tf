@@ -1,7 +1,9 @@
 ################################################################################
                 #required parameters
 ###################################################################################
-
+variable "s3_arn" {
+  
+}
 variable "create" {
   description = "Whether to create SQS queue"
   type        = bool
@@ -26,7 +28,7 @@ variable "name" {
 variable "enable_encryption" {
   type        = bool
   description = "Whether or not to use encryption for SNS Topic. If set to `true` and no custom value for KMS key (kms_master_key_id) is provided, it uses the default `alias/aws/sns` KMS key."
-  default     = false
+  default     = true
 }
 variable "kms_master_key_id" {
   description = "The ID of an AWS-managed customer master key (CMK) for Amazon SQS or a custom CMK"
@@ -54,7 +56,7 @@ variable "dlq_name" {
 variable "enable_dlq_encryption" {
   type        = bool
   description = "Whether or not to use encryption for SNS Topic. If set to `true` and no custom value for KMS key (kms_master_key_id) is provided, it uses the default `alias/aws/sns` KMS key."
-  default     = false
+  default     = true
 }
 
 variable "dlq_kms_master_key_id" {
@@ -63,10 +65,9 @@ variable "dlq_kms_master_key_id" {
   default     = ""
 }
 
+
 variable "lambda_arn" {
-    description = "provide lambda arn"
-    type = string
-    default = ""
+    
 }
 
 variable "dlq_tags" {
@@ -88,11 +89,13 @@ variable "create_queue_policy" {
   default     = false
 }
 
+
 variable "enable_sqs_lambda_trigger_enable" {
   description = "lambda treigger from sqs"
   type = bool
-  default = false
+  default = true
 }
+
 
 ###################################################################################
                  # other paramerters

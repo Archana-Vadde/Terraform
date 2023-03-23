@@ -1,7 +1,7 @@
 resource "aws_s3_bucket" "this" {
   count = var.create ? 1 : 0
   bucket = "${var.environment}-${var.name}"
-  bucket_prefix = var.bucket_prefix
+  
   tags = merge({ "ResourceName" = var.environment }, var.tags)
 }
   resource "aws_s3_bucket_public_access_block" "this" {

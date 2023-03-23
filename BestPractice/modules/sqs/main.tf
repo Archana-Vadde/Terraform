@@ -24,6 +24,7 @@ resource "aws_sqs_queue" "this" {
   receive_wait_time_seconds         = var.receive_wait_time_seconds
   sqs_managed_sse_enabled           = var.kms_master_key_id != null ? null : var.sqs_managed_sse_enabled
   visibility_timeout_seconds        = var.visibility_timeout_seconds
+  policy = data.aws_iam_policy_document.queue.json
 
   tags = var.tags
 }
@@ -227,4 +228,23 @@ resource "aws_lambda_event_source_mapping" "Example" {
   count = var.enable_sqs_lambda_trigger_enable ? 1 : 0
   event_source_arn = aws_sqs_queue.this[0].arn
   function_name    = var.lambda_arn
+}
+data "aws_iam_policy_document" "queue" {
+  statement {
+    effect = "Allow"
+
+    principals {
+      type        = "*"
+      identifiers = ["*"]
+    }
+
+    actions   = ["sqs:sendMessage"]
+    resources = ["arn:aws:sqs:*:*:*"]
+
+    condition {
+      test     = "ArnEquals"
+      variable = "aws:SourceArn"
+      values   = [var.s3_arn]
+    }
+  }
 }
