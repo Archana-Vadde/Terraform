@@ -138,6 +138,6 @@ variable "timeouts" {
 variable "dynamodb_item_create" {
   description = "Controls if DynamoDB table item and associated resources are created"
   type        = bool
-  default     = true
+  default     = false
 
 }

@@ -62,6 +62,7 @@ resource "aws_dynamodb_table" "this" {
     kms_key_arn = var.server_side_encryption_kms_key_arn
   } 
 }
+
 resource "aws_dynamodb_table_item" "example" {
   count = var.dynamodb_item_create ? 1:0
   table_name = aws_dynamodb_table.this[0].name
