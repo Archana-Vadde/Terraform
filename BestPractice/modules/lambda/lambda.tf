@@ -22,7 +22,7 @@ resource "aws_lambda_function" "test_lambda" {
 }
 resource "aws_lambda_function_event_invoke_config" "example" {
   count = var.create-event-invoke ? 1 : 0
-  function_name = aws_lambda_function.test_lambda.arn
+  function_name = aws_lambda_function.test_lambda[0].arn
   destination_config {
     on_failure {
       destination = var.sns_arn

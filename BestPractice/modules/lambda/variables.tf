@@ -17,7 +17,7 @@ variable "create-function" {
 }
 variable "create-event-invoke" {
     type = bool
-    default = true
+    default = false
   
 }
 variable "environment" {
