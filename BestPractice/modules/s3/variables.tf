@@ -1,4 +1,4 @@
-variable "name"{
+variable "s3_name"{
   type = string
   default = ""
 }
@@ -14,8 +14,11 @@ variable "tags" {
 }
 variable "environment" {
   type = string
-  default = ""
-  
+  default = ""  
+}
+variable "create_block_public_access" {
+  type = bool
+  default = true
 }
 variable "block_public_acls" {
   description = "Whether Amazon S3 should block public ACLs for this bucket."
@@ -41,7 +44,7 @@ variable "s3_kms_master_key_id" {
 variable "create_bucket_notification" {
   description = "Determines whether encryption will be created (affects all resources)"
   type        = bool
-  default     = true
+  default     = ""
 }
 variable "sqs_arn" {
   description = "arn of sqs service"
