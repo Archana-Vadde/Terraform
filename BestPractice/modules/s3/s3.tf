@@ -5,16 +5,17 @@ resource "aws_s3_bucket" "this" {
   tags = merge({ "ResourceName" = var.environment }, var.tags)
 }
   resource "aws_s3_bucket_public_access_block" "this" {
-  bucket                  = aws_s3_bucket.this[0].id
-  block_public_acls       = var.block_public_acls
-  block_public_policy     = var.block_public_policy
-  ignore_public_acls      = var.ignore_public_acls 
-  restrict_public_buckets = var.restrict_public_buckets
+    count = var.create_block_public_access ? 1 : 0
+    bucket                  = aws_s3_bucket.this[0].id
+    block_public_acls       = var.block_public_acls
+    block_public_policy     = var.block_public_policy
+    ignore_public_acls      = var.ignore_public_acls 
+    restrict_public_buckets = var.restrict_public_buckets
   }
   resource "aws_s3_bucket_notification" "notification" {
-  bucket = aws_s3_bucket.this[0].id
-
-  queue {
+    count = var.create_bucket_notification ? 1 : 0
+    bucket = aws_s3_bucket.this[0].id
+    queue {
     queue_arn     = var.sqs_arn
     events        = ["s3:ObjectCreated:*"]
   }
