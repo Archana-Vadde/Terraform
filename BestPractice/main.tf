@@ -11,12 +11,12 @@ locals {
     
   }
 }
-
+/*
 module "kms_module" {
-  source = ""
+  source = "./modules/kms"
   
 }
-/*
+
 module "s3_module" {
   source = "./modules/s3"
   kms_master_key_id = module.kms_module.key_arn
