@@ -13,9 +13,10 @@ locals {
 }
 
 module "kms_module" {
-  source = "./modules/kms"
-  tags = local.tags
+  source = "git::https://github.com/archna94/terraform-aws-kms.git"
+  name          = "alias/${var.environment}-${var.name}"
 }
+/*
 module "s3_module" {
   source = "./modules/s3"
   kms_master_key_id = module.kms_module.key_arn
@@ -53,7 +54,7 @@ module "redshift_module" {
   tags = local.tags
 }
 
-
+*/
 
 
 

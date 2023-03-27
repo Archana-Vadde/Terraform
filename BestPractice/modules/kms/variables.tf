@@ -1,7 +1,7 @@
 variable "create" {
   description = "Determines whether resources will be created (affects all resources)"
   type        = bool
-  default     = true
+  default     = false
 }
 variable "name" {
  type = string
