@@ -1,5 +1,15 @@
-variable "create" {
+variable "region" {
+  description = "name of the region"
+  type = string
+  default = "eu-west-1"
+}
+variable "create_rs" {
   description = "Determines whether to create Redshift cluster and resources (affects all resources)"
+  type        = bool
+  default     = true
+}
+variable "create_rs_random_password" {
+  description = "Determines whether to create random password for cluster `master_password`"
   type        = bool
   default     = true
 }
@@ -65,15 +75,10 @@ variable "cluster_identifier" {
   type        = string
   default     = "democluster"
 }
-variable "enable_encryption" {
-  type        = bool
-  description = "Whether or not to use encryption for SNS Topic. If set to `true` and no custom value for KMS key (kms_master_key_id) is provided, it uses the default `alias/aws/sns` KMS key."
-  default     = false
-}
-variable "kms_master_key_id" {
-  description = "The ID of an AWS-managed customer master key (CMK) for Amazon SNS or a custom CMK"
-  type        = string
-  default = ""
+variable "number_of_nodes" {
+  description = "Number of nodes in the cluster. Defaults to 1. Note: values greater than 1 will trigger `cluster_type` to switch to `multi-node`"
+  type        = number
+  default     = 1
 }
 
 # cluster_parameter_group_name -> see parameter group section
@@ -110,21 +115,27 @@ variable "enhanced_vpc_routing" {
   type        = bool
   default     = null
 }
+variable "skip_final_snapshot" {
+  description = "The identifier of the final snapshot that is to be created immediately before deleting the cluster. If this parameter is provided, `skip_final_snapshot` must be `false`"
+  type        = string
+  default     = true
+}
 
 variable "final_snapshot_identifier" {
   description = "The identifier of the final snapshot that is to be created immediately before deleting the cluster. If this parameter is provided, `skip_final_snapshot` must be `false`"
   type        = string
-  default     = null
+  default     = false
 }
-
-
-
-variable "kms_key_arn" {
+variable "enable_rs_encryption" {
+  type = bool
+  default = false
+}
+variable "rs_kms_master_key_id" {
   description = "The ARN for the KMS encryption key. When specifying `kms_key_arn`, `encrypted` needs to be set to `true`"
   type        = string
   default     = null
 }
-
+######################################################################
 variable "logging" {
   description = "Logging configuration for the cluster"
   type        = any
@@ -174,12 +185,6 @@ variable "node_type" {
   default     = "dc2.large"
 }
 
-variable "number_of_nodes" {
-  description = "Number of nodes in the cluster. Defaults to 1. Note: values greater than 1 will trigger `cluster_type` to switch to `multi-node`"
-  type        = number
-  default     = 1
-}
-
 variable "owner_account" {
   description = "The AWS customer account used to create or copy the snapshot. Required if you are restoring a snapshot you do not own, optional if you own the snapshot"
   type        = string
@@ -195,7 +200,7 @@ variable "port" {
 variable "preferred_maintenance_window" {
   description = "The weekly time range (in UTC) during which automated cluster maintenance can occur. Format: `ddd:hh24:mi-ddd:hh24:mi`"
   type        = string
-  default     = "sat:10:00-sat:10:30"
+  default     = ""#sat:10:00-sat:10:30
 }
 
 variable "publicly_accessible" {
@@ -204,11 +209,6 @@ variable "publicly_accessible" {
   default     = false
 }
 
-variable "skip_final_snapshot" {
-  description = "Determines whether a final snapshot of the cluster is created before Redshift deletes the cluster. If true, a final cluster snapshot is not created. If false , a final cluster snapshot is created before the cluster is deleted"
-  type        = bool
-  default     = true
-}
 
 variable "snapshot_cluster_identifier" {
   description = "The name of the cluster the source snapshot was created from"
@@ -231,7 +231,7 @@ variable "snapshot_identifier" {
 variable "vpc_security_group_ids" {
   description = "A list of Virtual Private Cloud (VPC) security groups to be associated with the cluster"
   type        = list(string)
-  default     = ["sg-0f354ab8121ab7ea7"]
+  default     = ["sg-005be9d93983e0c53"]
 }
 
 variable "cluster_timeouts" {
@@ -260,13 +260,13 @@ variable "default_iam_role_arn" {
 # Parameter Group
 ################################################################################
 
-variable "create_parameter_group" {
+variable "create_rs_parameter_group" {
   description = "Determines whether to create a parameter group or use existing"
   type        = bool
   default     = false
 }
 
-variable "parameter_group_name" {
+variable "rs_parameter_group_name" {
   description = "The name of the Redshift parameter group, existing or to be created"
   type        = string
   default     = null
@@ -300,13 +300,13 @@ variable "parameter_group_tags" {
 # Subnet Group
 ################################################################################
 
-variable "create_subnet_group" {
+variable "create_rs_subnet_group" {
   description = "Determines whether to create a subnet group or use existing"
   type        = bool
   default     = true
 }
 
-variable "subnet_group_name" {
+variable "rs_subnet_group_name" {
   description = "The name of the Redshift subnet group, existing or to be created"
   type        = string
   default     = "rsgroup"
@@ -321,7 +321,7 @@ variable "subnet_group_description" {
 variable "subnet_ids" {
   description = "An array of VPC subnet IDs to use in the subnet group"
   type        = list(string)
-  default     = ["subnet-0668d40ab19e92c11", "subnet-012cdcad69b4af1bb"]
+  default     = ["subnet-0a7411c374b59b404", "subnet-00b72fd7344088c8b"]
 }
 
 variable "subnet_group_tags" {

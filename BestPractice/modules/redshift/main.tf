@@ -1,8 +1,8 @@
 provider "aws" {
-  region = "eu-west-2"
+  region = var.region
 }
 resource "random_password" "master_password" {
-  count = var.create && var.create_random_password ? 1 : 0
+  count = var.create_rs && var.create_rs_random_password ? 1 : 0
 
   length           = var.random_password_length
   min_lower        = 1
@@ -17,15 +17,15 @@ resource "random_password" "master_password" {
 # Cluster
 ################################################################################
 
-locals {
-  subnet_group_name    = var.create && var.create_subnet_group ? aws_redshift_subnet_group.this[0].name : var.subnet_group_name
-  parameter_group_name = var.create && var.create_parameter_group ? aws_redshift_parameter_group.this[0].id : var.parameter_group_name
+# locals {
+#   subnet_group_name    = var.create_rs && var.create_rs_subnet_group ? aws_redshift_subnet_group.this[0].name : var.rs_subnet_group_name
+#   parameter_group_name = var.create_rs && var.create_rs_parameter_group ? aws_redshift_parameter_group.this[0].id : var.rs_parameter_group_name
 
-  master_password = var.create && var.create_random_password ? random_password.master_password[0].result : var.master_password
-}
+#   master_password = var.create && var.create_random_password ? random_password.master_password[0].result : var.master_password
+# }
 
 resource "aws_redshift_cluster" "this" {
-  count = var.create ? 1 : 0
+  count = var.create_rs ? 1 : 0
 
   allow_version_upgrade                = var.allow_version_upgrade
   apply_immediately                    = var.apply_immediately
@@ -34,8 +34,8 @@ resource "aws_redshift_cluster" "this" {
   availability_zone                    = var.availability_zone
   availability_zone_relocation_enabled = var.availability_zone_relocation_enabled
   cluster_identifier                   = "${var.environment}-${var.cluster_identifier}"
-  cluster_parameter_group_name         = local.parameter_group_name
-  cluster_subnet_group_name            = local.subnet_group_name
+  cluster_parameter_group_name         = var.create_rs_parameter_group ? aws_redshift_parameter_group.this[0].id : var.rs_parameter_group_name
+  cluster_subnet_group_name            = var.create_rs_subnet_group ? aws_redshift_subnet_group.this[0].name : var.rs_subnet_group_name
   cluster_type                         = var.number_of_nodes > 1 ? "multi-node" : "single-node"
   cluster_version                      = var.cluster_version
   database_name                        = var.database_name
@@ -43,7 +43,7 @@ resource "aws_redshift_cluster" "this" {
   encrypted                            = var.encrypted
   enhanced_vpc_routing                 = var.enhanced_vpc_routing
   final_snapshot_identifier            = var.skip_final_snapshot ? null : var.final_snapshot_identifier
-  kms_key_id                           = var.enable_encryption ? var.kms_master_key_id : null
+  kms_key_id                           = var.enable_rs_encryption ? var.rs_kms_master_key_id : null
 
   # iam_roles and default_iam_roles are managed in the aws_redshift_cluster_iam_roles resource below
 
@@ -58,10 +58,10 @@ resource "aws_redshift_cluster" "this" {
       s3_key_prefix        = try(logging.value.s3_key_prefix, null)
     }
   }
-
+#Try is an "if/else". Basically only two outcomes. Coalesce can use multiple conditions and will grab the first not-empty result. 
   maintenance_track_name           = var.maintenance_track_name
   manual_snapshot_retention_period = var.manual_snapshot_retention_period
-  master_password                  = var.snapshot_identifier != null ? null : local.master_password
+  master_password                  = var.create_random_password ? random_password.master_password[0].result : var.master_password
   master_username                  = var.master_username
   node_type                        = var.node_type
   number_of_nodes                  = var.number_of_nodes
@@ -102,8 +102,9 @@ resource "aws_redshift_cluster" "this" {
 # IAM Roles
 ################################################################################
 
+
 resource "aws_redshift_cluster_iam_roles" "this" {
-  count = var.create && length(var.iam_role_arns) > 0 ? 1 : 0
+  count = var.create_rs && length(var.iam_role_arns) > 0 ? 1 : 0
 
   cluster_identifier   = aws_redshift_cluster.this[0].id
   iam_role_arns        = var.iam_role_arns
@@ -115,9 +116,9 @@ resource "aws_redshift_cluster_iam_roles" "this" {
 ################################################################################
 
 resource "aws_redshift_parameter_group" "this" {
-  count = var.create && var.create_parameter_group ? 1 : 0
+  count = var.create_rs && var.create_rs_parameter_group ? 1 : 0
 
-  name        = coalesce(var.parameter_group_name, replace(var.cluster_identifier, ".", "-"))
+  name        = coalesce(var.rs_parameter_group_name, replace(var.cluster_identifier, ".", "-"))
   description = var.parameter_group_description
   family      = var.parameter_group_family
 
@@ -137,9 +138,9 @@ resource "aws_redshift_parameter_group" "this" {
 ################################################################################
 
 resource "aws_redshift_subnet_group" "this" {
-  count = var.create && var.create_subnet_group ? 1 : 0
+  count = var.create_rs && var.create_rs_subnet_group ? 1 : 0
 
-  name        = coalesce(var.subnet_group_name, var.cluster_identifier)
+  name        = coalesce(var.rs_subnet_group_name, var.cluster_identifier)
   description = var.subnet_group_description
   subnet_ids  = var.subnet_ids
 
